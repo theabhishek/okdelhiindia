@@ -59,7 +59,7 @@ def edit_coupon(request, pk):
     else:
         form = CouponForm(instance=coupon)
     return render(request, 'coupon_service/edit_coupon.html', {'form': form, 'coupon': coupon})
-
+@login_required
 def track_click(request, pk):
     coupon = get_object_or_404(Coupon, pk=pk)
     
