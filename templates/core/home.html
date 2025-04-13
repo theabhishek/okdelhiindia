@@ -1,0 +1,232 @@
+{% extends 'base/base.html' %}
+<style>
+
+
+</style>
+{% block title %}Home - Reddit Clone{% endblock %}
+{% block content %}
+
+<div class="bg-gray-50 dark:bg-gray-900 min-h-screen">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+ 
+            <div class="lg:col-span-2 space-y-6">
+            
+<!-- slide-->
+
+
+<!-- Flickity HTML init -->
+<div class="carousel" data-flickity='{ "groupCells": true ,"autoPlay": true, "freeScroll": true, "contain": true, "prevNextButtons": false, "pageDots": false }'>
+  <div class="carousel-cell">
+    <a href="/delhi-wiki/areas/">
+    <img class="h-24" src="https://iili.io/3cSWfGp.png" alt="">
+    </a>                  
+  </div>
+  <div class="carousel-cell size-180">
+    <a href="/delhi-wiki/metro/route-finder/">
+    <img class="h-24" src="https://iili.io/3cS8Hfs.png" alt="">
+</a>              
+  </div>
+  <div class="carousel-cell size-large">
+    <a href="/pg-rental/">
+    <img class="h-24" src="https://iili.io/3cSbpyP.gif" alt="">
+</a>              
+  </div>
+  <div class="carousel-cell">
+    <a href="/jobs/">
+    <img class="h-24" src="https://iili.io/3cUJE4s.gif" alt="">
+</a>            
+  </div>
+  <div class="carousel-cell size-large">
+    <a href="/lost-and-found/">
+    <img class="h-24" src="https://iili.io/3cUq0OJ.gif" alt="">
+</a>            
+  </div>
+  <div class="carousel-cell size-large">
+    <a href="/coupons/">
+    <img class="h-24" src="https://iili.io/3cUon1V.gif" alt="">
+</a>            
+  </div>
+ 
+  <div class="carousel-cell size-large">
+    <a href="/storytelling/">
+    <img class="h-24" src="https://iili.io/3cUuy1j.gif" alt="">
+    </a> 
+  </div>
+  <div class="carousel-cell">
+    <a href="/news/">
+    <img class="h-24" src="https://iili.io/3cUV65F.gif" alt="">
+</a>          
+  </div>
+  <div class="carousel-cell">
+    <a href="/hotel/">
+    <img class="h-24" src="https://iili.io/3csXvhN.png" alt="">
+</a>          
+  </div>
+  <div class="carousel-cell">
+    <a href="/notifications/">
+    <img class="h-24" src="https://iili.io/3cgqBYF.gif" alt="">
+</a>          
+  </div>
+</div>
+
+
+<!--slideshow-->
+                {% if user.is_authenticated %}
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4">
+                    <div class="flex items-center space-x-3">
+                        {% if user.avatar %}
+                            <img src="{{ user.avatar.url }}" alt="User Avatar" class="w-10 h-10 rounded-full flex-shrink-0">
+                        {% else %}
+                            <div class="w-10 h-10 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center flex-shrink-0">
+                                <span class="text-gray-600 dark:text-gray-300 font-medium text-sm">{{ user.username|first|upper }}</span>
+                            </div>
+                        {% endif %}
+                        <a href="{% url 'posts:create' %}" class="flex-1 bg-gray-100 dark:bg-gray-700 rounded-full px-4 py-2 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-800 transition duration-150 ease-in-out text-sm sm:text-base">
+                            Create Post
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% for post in posts %}
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-150 ease-in-out">
+                    <div class="p-5 sm:p-6">
+                        <div class="flex items-center space-x-2 text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-3">
+                             {% if post.subreddit.icon %}
+                                <img src="{{ post.subreddit.icon.url }}" alt="{{ post.subreddit.name }} icon" class="w-5 h-5 rounded-full flex-shrink-0">
+                             {% else %}
+                                 <div class="w-5 h-5 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center flex-shrink-0 text-gray-500 dark:text-gray-300 text-xs">D/</div>
+                             {% endif %}
+                            <a href="{% url 'subreddits:detail' post.subreddit.slug %}" class="font-medium text-gray-800 dark:text-gray-200 hover:underline hover:text-blue-600 dark:hover:text-blue-400">
+                                D/{{ post.subreddit.name }}
+                            </a>
+                            <span>•</span>
+                            <span>Posted by</span>
+                            <a href="{% url 'users:profile' post.author.username %}" class="font-medium text-gray-800 dark:text-gray-200 hover:underline hover:text-blue-600 dark:hover:text-blue-400">
+                                u/{{ post.author.username }}
+                            </a>
+                            <span>•</span>
+                            <span>{{ post.created_at|timesince }} ago</span>
+                        </div>
+
+                        <h2 class="text-lg sm:text-xl font-semibold text-gray-900 dark:text-gray-100">
+                            <a href="{% url 'posts:detail' post.subreddit.slug post.slug %}" class="hover:text-blue-600 dark:hover:text-blue-400 hover:underline">
+                                {{ post.title }}
+                            </a>
+                        </h2>
+
+                        {% if post.content %}
+                        <p class="mt-3 text-gray-700 dark:text-gray-300 text-sm sm:text-base leading-relaxed">
+                            {{ post.content|truncatewords:50 }}
+                            {% if post.content|wordcount > 50 %}
+                            <a href="{% url 'posts:detail' post.subreddit.slug post.slug %}" class="text-blue-600 dark:text-blue-400 hover:underline text-xs"> read more</a>
+                            {% endif %}
+                        </p>
+                        {% endif %}
+
+                        <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 flex items-center justify-between flex-wrap gap-y-2 gap-x-4">
+                            <div class="flex items-center space-x-1">
+                                {% if user.is_authenticated %}
+                                    <form method="post" action="{% url 'posts:upvote' post.subreddit.slug post.slug %}?next={{ request.path }}" class="inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="p-1 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-red-500 dark:hover:text-red-500 {% if user in post.upvotes.all %}text-red-500 dark:text-red-500 bg-red-50 dark:bg-gray-700{% endif %} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 dark:focus:ring-offset-gray-800 transition duration-150 ease-in-out" aria-label="Upvote">
+                                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3.293 9.707a1 1 0 010-1.414l6-6a1 1 0 011.414 0l6 6a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L4.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
+                                        </button>
+                                    </form>
+                                    <span class="text-sm font-medium text-gray-900 dark:text-gray-100 min-w-[20px] text-center">{{ post.score }}</span>
+                                    <form method="post" action="{% url 'posts:downvote' post.subreddit.slug post.slug %}?next={{ request.path }}" class="inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="p-1 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-blue-500 dark:hover:text-blue-500 {% if user in post.downvotes.all %}text-blue-500 dark:text-blue-500 bg-blue-50 dark:bg-gray-700{% endif %} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-800 transition duration-150 ease-in-out" aria-label="Downvote">
+                                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 10.293a1 1 0 010 1.414l-6 6a1 1 0 01-1.414 0l-6-6a1 1 0 111.414-1.414L9 14.586V3a1 1 0 012 0v11.586l4.293-4.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                                        </button>
+                                    </form>
+                                {% else %}
+                                    <a href="{% url 'users:login' %}" class="p-1 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-red-500 dark:hover:text-red-500 transition duration-150 ease-in-out" aria-label="Login to Upvote">
+                                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3.293 9.707a1 1 0 010-1.414l6-6a1 1 0 011.414 0l6 6a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L4.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
+                                    </a>
+                                    <span class="text-sm font-medium text-gray-900 dark:text-gray-100 min-w-[20px] text-center">{{ post.score }}</span>
+                                    <a href="{% url 'users:login' %}" class="p-1 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-blue-500 dark:hover:text-blue-500 transition duration-150 ease-in-out" aria-label="Login to Downvote">
+                                       <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 10.293a1 1 0 010 1.414l-6 6a1 1 0 01-1.414 0l-6-6a1 1 0 111.414-1.414L9 14.586V3a1 1 0 012 0v11.586l4.293-4.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                                    </a>
+                                {% endif %}
+                            </div>
+
+                            <div class="flex items-center space-x-4">
+                                <a href="{% url 'posts:detail' post.subreddit.slug post.slug %}" class="flex items-center space-x-1 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 p-1 rounded-md transition duration-150 ease-in-out">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                                    </svg>
+                                    <span class="text-sm font-medium">{{ post.comments.count }} Comment{{ post.comments.count|pluralize }}</span>
+                                </a>
+                                <button class="flex items-center space-x-1 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-800 transition duration-150 ease-in-out">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path>
+                                    </svg>
+                                    <span class="text-sm font-medium">Share</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 text-center">
+                    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                      <path vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+                    </svg>
+                    <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">No posts yet</h3>
+                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Get started by creating a new post.</p>
+                     {% if user.is_authenticated %}
+                    <div class="mt-6">
+                      <a href="{% url 'posts:create' %}" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-800 transition duration-150 ease-in-out">
+                        <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                          <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+                        </svg>
+                        Create Post
+                      </a>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+
+                </div> <div class="lg:col-span-1">
+                <div class="sticky top-8 space-y-6"> <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md">
+                         <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+                             <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100">Popular Communities</h3>
+                         </div>
+                         <div class="p-4 space-y-3">
+                            {% for subreddit in subreddits %}
+                            <a href="{% url 'subreddits:detail' subreddit.slug %}" class="flex items-center space-x-3 group p-2 -m-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition duration-150 ease-in-out">
+                                {% if subreddit.icon %}
+                                    <img src="{{ subreddit.icon.url }}" alt="{{ subreddit.name }}" class="w-8 h-8 rounded-full flex-shrink-0">
+                                {% else %}
+                                    <div class="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center flex-shrink-0">
+                                        <span class="text-gray-500 dark:text-gray-300 text-xs font-medium">D/</span>
+                                    </div>
+                                {% endif %}
+                                <div class="flex-1 overflow-hidden">
+                                    <p class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate group-hover:text-blue-600 dark:group-hover:text-blue-400">D/{{ subreddit.name }}</p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ subreddit.subscribers.count }} member{{ subreddit.subscribers.count|pluralize }}</p>
+                                </div>
+                                <svg class="w-5 h-5 text-gray-400 dark:text-gray-500 group-hover:text-gray-500 dark:group-hover:text-gray-300 ml-auto" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
+                            </a>
+                            {% empty %}
+                            <p class="text-sm text-gray-500 dark:text-gray-400">No communities found.</p>
+                            {% endfor %}
+                        </div>
+                        {% if user.is_authenticated %}
+                        <div class="p-4 border-t border-gray-200 dark:border-gray-700">
+                            <a href="{% url 'subreddits:create' %}" class="block w-full text-center bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-blue-800 text-white font-medium rounded-lg text-sm py-2.5 px-4 transition duration-150 ease-in-out">
+                                Create Community
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                
+
+                </div> </div> </div>
+    </div>
+</div>
+
+{% endblock %} 
